@@ -1,0 +1,54 @@
+{
+  "overview": {
+    "top_areas": [
+      {
+        "city_ar": "الرياض",
+        "city_en": "AR RIYADH",
+        "region_ar": "الرياض",
+        "region_en": "Riyadh",
+        "sum_views": "31610598"
+      },
+      {
+        "city_ar": "جدة",
+        "city_en": "JEDDAH",
+        "region_ar": "مكة المكرمة",
+        "region_en": "Makkah",
+        "sum_views": "10650081"
+      }
+    ],
+    "avg_price_info": {
+      "avg_price": "1247658.946740",
+      "city_ar": "الرياض",
+      "city_en": "AR RIYADH",
+      "region_ar": "الرياض",
+      "region_en": "Riyadh"
+    },
+    "sale_available": {
+      "count_units": "24583"
+    },
+    "marketplace_avg_sale_price": {
+      "last_month": "945069.864237",
+      "percentage_value": "48.437505414459",
+      "second_last_month": "636678.622157",
+      "avg_units_booked": "1085906.138530"
+    },
+    "units_sold": {
+      "last_month": "3638",
+      "percentage_value": "350.247524752475",
+      "second_last_month": "808",
+      "count_units_booked": "75"
+    },
+    "transactions": {
+      "last_month": "17805",
+      "percentage_value": "115.6091063211431000",
+      "second_last_month": "8258",
+      "count_bookings": "239084"
+    }
+  },
+  "mega_projects": [],
+  "projects_under_construction": [],
+  "projects_readymade": [],
+  "market_unit_buy": [],
+  "market_lands_buy": [],
+  "market_unit_rent": []
+}
