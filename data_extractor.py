@@ -40,10 +40,10 @@ class ProjectDataExtractor:
                 item.get("attributes", {}).get("url", "")
                 for item in media.get("gallery", [])
             ],
-            "geo_map": self.fetch_geojson_features(geo_map_url),
+            "geo_map": geo_map_url if geo_map_url else None,
             "brochure": media.get("brochure", {}).get("attributes", {}).get("url", ""),
             "master_plan": media.get("master_plan", {}).get("attributes", {}).get("url", ""),
-            "geo_map_polygons": self.fetch_geojson_features(geo_map_polygons_url),
+            "geo_map_polygons": geo_map_polygons_url if geo_map_polygons_url else None,
         }
     
     @staticmethod

@@ -39,6 +39,9 @@ class DataCollectionOrchestrator:
             console.print("\n[bold]Fetching mega projects data...[/bold]")
             mega_projects = self.api_client.get_mega_projects()
             if mega_projects:
+                if self.config.test_run:
+                    mega_projects = mega_projects[:1]
+                    console.print("[bold cyan]TEST MODE: Limited to first mega project[/bold cyan]")
                 output_data["mega_projects"] = mega_projects
                 console.print(f"[bold green]✓[/bold green] Successfully collected {len(mega_projects)} mega projects")
             else:
@@ -50,6 +53,9 @@ class DataCollectionOrchestrator:
             console.print("\n[bold]Starting projects under construction data collection...[/bold]")
             under_construction_ids = self.api_client.get_project_ids(marketplace_purpose="buy", product_types="units_under_construction")
             if under_construction_ids:
+                if self.config.test_run:
+                    under_construction_ids = under_construction_ids[:1]
+                    console.print("[bold cyan]TEST MODE: Limited to first project[/bold cyan]")
                 if self.config.use_threading:
                     console.print(f"[bold cyan]Processing {len(under_construction_ids)} under construction projects concurrently with {self.config.max_workers} workers[/bold cyan]\n")
                 else:
@@ -64,6 +70,9 @@ class DataCollectionOrchestrator:
             console.print("\n[bold]Starting readymade projects data collection...[/bold]")
             readymade_ids = self.api_client.get_project_ids(marketplace_purpose="buy", product_types="readymade_units")
             if readymade_ids:
+                if self.config.test_run:
+                    readymade_ids = readymade_ids[:1]
+                    console.print("[bold cyan]TEST MODE: Limited to first project[/bold cyan]")
                 if self.config.use_threading:
                     console.print(f"[bold cyan]Processing {len(readymade_ids)} readymade projects concurrently with {self.config.max_workers} workers[/bold cyan]\n")
                 else:
@@ -78,6 +87,9 @@ class DataCollectionOrchestrator:
             console.print("\n[bold]Starting market unit buy data collection...[/bold]")
             market_unit_ids = self.api_client.get_market_unit_ids(marketplace_purpose="buy", product_types="readymade_units")
             if market_unit_ids:
+                if self.config.test_run:
+                    market_unit_ids = market_unit_ids[:1]
+                    console.print("[bold cyan]TEST MODE: Limited to first unit[/bold cyan]")
                 if self.config.use_threading:
                     console.print(f"[bold cyan]Processing {len(market_unit_ids)} market units concurrently with {self.config.max_workers} workers[/bold cyan]\n")
                 else:
@@ -92,6 +104,9 @@ class DataCollectionOrchestrator:
             console.print("\n[bold]Starting market lands buy data collection...[/bold]")
             market_lands_ids = self.api_client.get_market_unit_ids(marketplace_purpose="buy", product_types="lands")
             if market_lands_ids:
+                if self.config.test_run:
+                    market_lands_ids = market_lands_ids[:1]
+                    console.print("[bold cyan]TEST MODE: Limited to first unit[/bold cyan]")
                 if self.config.use_threading:
                     console.print(f"[bold cyan]Processing {len(market_lands_ids)} market lands concurrently with {self.config.max_workers} workers[/bold cyan]\n")
                 else:
@@ -106,6 +121,9 @@ class DataCollectionOrchestrator:
             console.print("\n[bold]Starting market unit rent data collection...[/bold]")
             market_unit_rent_ids = self.api_client.get_market_unit_rent_ids()
             if market_unit_rent_ids:
+                if self.config.test_run:
+                    market_unit_rent_ids = market_unit_rent_ids[:1]
+                    console.print("[bold cyan]TEST MODE: Limited to first unit[/bold cyan]")
                 if self.config.use_threading:
                     console.print(f"[bold cyan]Processing {len(market_unit_rent_ids)} rental market units concurrently with {self.config.max_workers} workers[/bold cyan]\n")
                 else:

@@ -2,7 +2,6 @@ import logging
 from dotenv import load_dotenv
 from rich.console import Console
 from rich.logging import RichHandler
-
 import configuration as config
 from rate_limiter import GlobalRateLimiter
 from http_client import HTTPClient
@@ -30,14 +29,15 @@ def main():
         api_client = SakaniAPIClient(http_client)
         extractor = ProjectDataExtractor(http_client.proxy_config, config.speed_factor)
         collector = ProjectDataCollector(api_client, extractor, config.max_workers, config.use_threading, config.max_retries, 
-                                        config.unit_insights, config.unit_project_trends, config.unit_transactions)
+                                        config.unit_insights, config.unit_project_trends, config.unit_transactions,
+                                        config.project_insight, config.price_trends, config.project_transactions, config.demographics)
         orchestrator = DataCollectionOrchestrator(api_client, collector, config)
         exporter = DataExporter()
         
         all_data = orchestrator.collect_all_data()
         
         if all_data:
-            exporter.export_to_json(all_data, "sakani_data.json")
+            exporter.export_to_geojson_files(all_data)
             mega_projects_count = len(all_data.get("mega_projects", []))
             projects_count = len(all_data.get("projects_under_construction", [])) + len(all_data.get("projects_readymade", []))
             market_units_count = len(all_data.get("market_unit_buy", [])) + len(all_data.get("market_lands_buy", [])) + len(all_data.get("market_unit_rent", []))

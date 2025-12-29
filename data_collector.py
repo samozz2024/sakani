@@ -12,7 +12,8 @@ logger = logging.getLogger(__name__)
 class ProjectDataCollector:
     def __init__(self, api_client: SakaniAPIClient, extractor: ProjectDataExtractor, 
                  max_workers: int, use_threading: bool, max_retries: int, 
-                 unit_insights: bool, unit_project_trends: bool, unit_transactions: bool):
+                 unit_insights: bool, unit_project_trends: bool, unit_transactions: bool,
+                 project_insight: bool, price_trends: bool, project_transactions: bool, demographics: bool):
         self.api_client = api_client
         self.extractor = extractor
         self.max_workers = max_workers
@@ -21,6 +22,10 @@ class ProjectDataCollector:
         self.unit_insights = unit_insights
         self.unit_project_trends = unit_project_trends
         self.unit_transactions = unit_transactions
+        self.project_insight = project_insight
+        self.price_trends = price_trends
+        self.project_transactions = project_transactions
+        self.demographics = demographics
         self.lock = Lock()
         self.processed_project_ids = set()
         self.processed_market_unit_ids = set()
@@ -37,10 +42,26 @@ class ProjectDataCollector:
                 
                 extracted_data = self.extractor.extract_project_data(json_data)
                 
-                extracted_data["price_trends"] = self.api_client.get_price_trends(project_id)
-                extracted_data["demographics"] = self.api_client.get_demographics(project_id)
-                extracted_data["project_insight"] = self.api_client.get_project_insight(project_id)
-                extracted_data["project_transactions"] = self.api_client.get_project_transactions(project_id)
+                if self.price_trends:
+                    extracted_data["price_trends"] = self.api_client.get_price_trends(project_id)
+                else:
+                    extracted_data["price_trends"] = []
+                
+                if self.demographics:
+                    extracted_data["demographics"] = self.api_client.get_demographics(project_id)
+                else:
+                    extracted_data["demographics"] = {}
+                
+                if self.project_insight:
+                    extracted_data["project_insight"] = self.api_client.get_project_insight(project_id)
+                else:
+                    extracted_data["project_insight"] = {}
+                
+                if self.project_transactions:
+                    extracted_data["project_transactions"] = self.api_client.get_project_transactions(project_id)
+                else:
+                    extracted_data["project_transactions"] = []
+                
                 extracted_data["available_units"] = self._collect_available_units_with_details(project_id)
                 extracted_data["unit_models"] = self.api_client.get_unit_models(project_id)
                 
