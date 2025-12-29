@@ -31,6 +31,7 @@ class ProjectDataCollector:
         self.processed_market_unit_ids = set()
     
     def _collect_single_project_data(self, project_id: str) -> Optional[Dict]:
+        """Collects all data for a single project with retry logic"""
         for attempt in range(self.max_retries):
             try:
                 json_data = self.api_client.get_project_details(project_id)
@@ -42,6 +43,7 @@ class ProjectDataCollector:
                 
                 extracted_data = self.extractor.extract_project_data(json_data)
                 
+                # Conditionally fetch additional project data based on config
                 if self.price_trends:
                     extracted_data["price_trends"] = self.api_client.get_price_trends(project_id)
                 else:
@@ -78,12 +80,15 @@ class ProjectDataCollector:
         return None
     
     def _collect_available_units_with_details(self, project_id: str) -> List[Dict]:
+        """Fetches available units and enriches them with additional data"""
         available_units = self.api_client.get_available_units(project_id)
         
         if not available_units:
             return []
         
         def enrich_unit(unit: Dict) -> Dict:
+            """Enriches a single unit with insights, trends, and transactions"""
+            # Skip enrichment if all unit extras are disabled
             if not any([self.unit_insights, self.unit_project_trends, self.unit_transactions]):
                 return {"unit_insights": {}, "unit_project_trends": [], "unit_transactions": [], **unit}
             
@@ -127,6 +132,7 @@ class ProjectDataCollector:
             return {"unit_insights": {}, "unit_project_trends": [], "unit_transactions": [], **unit}
         
         enriched_units = []
+        # Process units concurrently or sequentially based on config
         if self.use_threading:
             with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
                 future_to_unit = {executor.submit(enrich_unit, unit): unit for unit in available_units}
@@ -151,6 +157,7 @@ class ProjectDataCollector:
         return enriched_units
     
     def _collect_projects_batch(self, project_ids: List[str], output_data: Dict, data_key: str, category_name: str) -> None:
+        """Collects multiple projects concurrently or sequentially"""
         if self.use_threading:
             with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
                 future_to_project = {executor.submit(self._collect_single_project_data, pid): pid for pid in project_ids}
@@ -163,6 +170,7 @@ class ProjectDataCollector:
                     try:
                         project_data = future.result()
                         if project_data:
+                            # Thread-safe data storage
                             with self.lock:
                                 if project_id not in self.processed_project_ids:
                                     output_data[data_key].append(project_data)

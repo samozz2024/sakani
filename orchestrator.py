@@ -6,12 +6,14 @@ from data_collector import ProjectDataCollector
 console = Console()
 
 class DataCollectionOrchestrator:
+    """Orchestrates the entire data collection workflow"""
     def __init__(self, api_client: SakaniAPIClient, collector: ProjectDataCollector, config):
         self.api_client = api_client
         self.collector = collector
         self.config = config
     
     def collect_all_data(self) -> Dict:
+        """Collects all enabled data categories based on configuration"""
         console.print("\n[bold cyan]═══ Starting Data Collection ═══[/bold cyan]\n")
         
         output_data = {
@@ -53,6 +55,7 @@ class DataCollectionOrchestrator:
             console.print("\n[bold]Starting projects under construction data collection...[/bold]")
             under_construction_ids = self.api_client.get_project_ids(marketplace_purpose="buy", product_types="units_under_construction")
             if under_construction_ids:
+                # Test mode limits to first item for fast testing
                 if self.config.test_run:
                     under_construction_ids = under_construction_ids[:1]
                     console.print("[bold cyan]TEST MODE: Limited to first project[/bold cyan]")

@@ -7,13 +7,14 @@ console = Console()
 class GlobalRateLimiter:
     def __init__(self, pause_duration_minutes: int):
         self.pause_duration_minutes = pause_duration_minutes
-        self.pause_event = Event()
-        self.pause_event.set()
-        self.lock = Lock()
+        self.pause_event = Event()  # Controls worker pause/resume state
+        self.pause_event.set()  # Initially set (not paused)
+        self.lock = Lock()  # Ensures only one thread triggers pause
         
     def trigger_global_pause(self, status_code: int, url: str):
+        """Pauses all workers when hitting rate limits (403/429)"""
         with self.lock:
-            if self.pause_event.is_set():
+            if self.pause_event.is_set():  # Only trigger if not already paused
                 self.pause_event.clear()
                 pause_seconds = self.pause_duration_minutes * 60
                 console.print(f"[bold red]✗ Request failed with status {status_code} for {url}[/bold red]")
@@ -23,4 +24,5 @@ class GlobalRateLimiter:
                 self.pause_event.set()
     
     def wait_if_paused(self):
+        """Blocks the calling thread if system is paused"""
         self.pause_event.wait()

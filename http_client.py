@@ -37,6 +37,8 @@ class HTTPClient:
         return {"http": proxy_url}
     
     def make_request(self, url: str, params: Optional[Dict] = None, allow_404: bool = False) -> Optional[Dict]:
+        """Makes HTTP request with rate limiting and error handling"""
+        # Wait if system is paused due to rate limiting
         self.rate_limiter.wait_if_paused()
         
         try:
@@ -45,12 +47,15 @@ class HTTPClient:
             else:
                 response = requests.get(url, params=params, impersonate="chrome")
             
+            # Random delay to avoid detection
             delay = random.uniform(self.speed_factor - 0.02, self.speed_factor + 0.02)
             time.sleep(delay)
             
+            # Some endpoints return 404 for missing data (not an error)
             if allow_404 and response.status_code == 404:
                 return {}
             
+            # Trigger global pause on rate limit errors
             if response.status_code in [403, 429]:
                 self.rate_limiter.trigger_global_pause(response.status_code, url)
                 raise Exception(f"Request failed with status {response.status_code}")

@@ -31,6 +31,7 @@ class ProjectDataExtractor:
         return None
     
     def extract_media(self, media: Dict) -> Dict:
+        """Extracts media URLs (stores URLs only, not JSON content)"""
         geo_map_url = media.get("geo_map", {}).get("attributes", {}).get("url", "")
         geo_map_polygons_url = media.get("geo_map_polygons", {}).get("attributes", {}).get("url", "")
         

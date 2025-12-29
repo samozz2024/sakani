@@ -23,7 +23,9 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 def main():
+    """Main entry point for Sakani data collection"""
     try:
+        # Initialize core components
         rate_limiter = GlobalRateLimiter(config.pause_duration_minutes)
         http_client = HTTPClient(rate_limiter, config.speed_factor)
         api_client = SakaniAPIClient(http_client)
@@ -34,8 +36,10 @@ def main():
         orchestrator = DataCollectionOrchestrator(api_client, collector, config)
         exporter = DataExporter()
         
+        # Collect all data based on configuration
         all_data = orchestrator.collect_all_data()
         
+        # Export data to GeoJSON files
         if all_data:
             exporter.export_to_geojson_files(all_data)
             mega_projects_count = len(all_data.get("mega_projects", []))

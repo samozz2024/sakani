@@ -5,6 +5,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
 
 class GeoJSONTransformer:
+    """Transforms collected data into GeoJSON standard format"""
     
     @staticmethod
     def transform_overview(overview_data: Dict) -> Dict:
@@ -62,6 +63,7 @@ class GeoJSONTransformer:
     
     @staticmethod
     def _create_project_feature(project: Dict) -> Dict:
+        """Creates a GeoJSON feature for a project (includes demographics, insights, etc.)"""
         project_id = project.get("project_id", "")
         location = project.get("location", {})
         
@@ -76,6 +78,7 @@ class GeoJSONTransformer:
         else:
             geometry = None
         
+        # Include all project data except available_units (which become separate features)
         properties = {k: v for k, v in project.items() if k != "available_units"}
         
         return {
@@ -87,10 +90,12 @@ class GeoJSONTransformer:
     
     @staticmethod
     def _create_unit_feature(unit: Dict, project_id: str, project_location: Dict) -> Dict:
+        """Creates a GeoJSON feature for a unit (links to parent project via project_id)"""
         unit_id = unit.get("id", "")
         unit_attributes = unit.get("attributes", {})
         unit_location = unit_attributes.get("location", {})
         
+        # Use unit location if available, otherwise fallback to project location
         if unit_location and unit_location.get("latitude") and unit_location.get("longitude"):
             geometry = {
                 "type": "Point",
@@ -128,6 +133,7 @@ class GeoJSONTransformer:
     
     @staticmethod
     def transform_projects(projects: List[Dict]) -> Dict:
+        """Transforms projects into GeoJSON with both project and unit features"""
         features = []
         
         for project in projects:
@@ -135,9 +141,11 @@ class GeoJSONTransformer:
             project_location = project.get("location", {})
             available_units = project.get("available_units", [])
             
+            # Add project as a feature
             project_feature = GeoJSONTransformer._create_project_feature(project)
             features.append(project_feature)
             
+            # Add each unit as a separate feature
             for unit in available_units:
                 unit_feature = GeoJSONTransformer._create_unit_feature(
                     unit,
@@ -189,6 +197,7 @@ class GeoJSONTransformer:
     
     @staticmethod
     def transform_all_data(data: Dict) -> Dict[str, Dict]:
+        """Transforms all collected data into GeoJSON format for export"""
         transformed = {}
         
         if data.get("overview"):

@@ -14,6 +14,7 @@ class SakaniAPIClient:
         return data.get("data", {}).get("attributes", {}) if data else {}
     
     def get_project_ids(self, marketplace_purpose: str = "buy", product_types: Optional[str] = "units_under_construction") -> List[str]:
+        """Fetches all project IDs for a given category"""
         url = "https://sakani.sa/marketplaceApi/search/v3/location"
         params = {
             "filter[marketplace_purpose]": marketplace_purpose,
@@ -33,8 +34,9 @@ class SakaniAPIClient:
         
         project_ids = []
         for item in data.get("data", []):
+            # Filter only projects (not individual units)
             if item.get("attributes", {}).get("resource_type") == "projects":
-                project_ids.append(item["id"][8:])
+                project_ids.append(item["id"][8:])  # Remove 'project_' prefix
         
         logger.info(f"Found {len(project_ids)} projects for {category}")
         return project_ids
@@ -101,6 +103,7 @@ class SakaniAPIClient:
         return data.get("data", {}).get("attributes", {}).get("unit_transactions_data", []) if data else []
     
     def get_market_unit_ids(self, marketplace_purpose: str = "buy", product_types: Optional[str] = "readymade_units") -> List[str]:
+        """Fetches market unit IDs (individual units not part of projects)"""
         url = "https://sakani.sa/marketplaceApi/search/v3/location"
         params = {
             "filter[marketplace_purpose]": marketplace_purpose,
@@ -124,6 +127,7 @@ class SakaniAPIClient:
         return market_unit_ids
     
     def get_market_unit_rent_ids(self) -> List[str]:
+        """Fetches rental market unit IDs"""
         url = "https://sakani.sa/marketplaceApi/search/v2/location"
         params = {
             "filter[marketplace_purpose]": "rent",

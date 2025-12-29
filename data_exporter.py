@@ -8,6 +8,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
 
 class DataExporter:
+    """Handles exporting collected data to JSON files"""
     @staticmethod
     def export_to_json(data: Dict, filename: str) -> None:
         try:
@@ -20,10 +21,13 @@ class DataExporter:
     
     @staticmethod
     def export_to_geojson_files(data: Dict, output_dir: str = "output") -> None:
+        """Exports all data categories as separate GeoJSON files"""
         try:
+            # Create output directory if it doesn't exist
             os.makedirs(output_dir, exist_ok=True)
             logger.info(f"Created/verified output directory: {output_dir}")
             
+            # Transform all data to GeoJSON format
             transformed_data = GeoJSONTransformer.transform_all_data(data)
             
             file_mapping = {
