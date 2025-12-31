@@ -1,10 +1,10 @@
 # Sakani Scraper
 
 ## 1. create (.env) file with following info:
-PROXY_ENDPOINT=rp.scrapegw.com:6060\n
-PROXY_USERNAME=username\n
-PROXY_PASSWORD=password\n
-USE_PROXY=True\n
+### PROXY_ENDPOINT=rp.scrapegw.com:6060
+### PROXY_USERNAME=username
+### PROXY_PASSWORD=password
+### USE_PROXY=True
 
 ## 2. edit configuration.py if needed (Be careful with Rate limiting settings)
 
