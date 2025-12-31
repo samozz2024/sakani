@@ -51,24 +51,24 @@ class SakaniAPIClient:
             "filter[project_id]": project_id,
             "filter[months_back_trend]": months,
         }
-        data = self.http_client.make_request(url, params)
+        data = self.http_client.make_request(url, params, allow_404=True)
         return data.get("data", {}).get("attributes", {}).get("price_trends_data", []) if data else []
     
     def get_demographics(self, project_id: str) -> Dict:
         url = "https://sakani.sa/analyticCollector/compare_insights/demographic_overview"
         params = {"filter[project_id]": project_id}
-        data = self.http_client.make_request(url, params)
+        data = self.http_client.make_request(url, params, allow_404=True)
         return data.get("data", {}).get("attributes", {}) if data else {}
     
     def get_project_insight(self, project_id: str) -> Dict:
         url = f"https://sakani.sa/analyticCollector/embedded_insights/projects/{project_id}"
-        data = self.http_client.make_request(url)
+        data = self.http_client.make_request(url, allow_404=True)
         return data.get("data", {}).get("attributes", {}) if data else {}
     
     def get_project_transactions(self, project_id: str) -> List[Dict]:
         url = "https://sakani.sa/analyticCollector/compare_insights/project_transactions"
         params = {"filter[project_id]": project_id}
-        data = self.http_client.make_request(url, params)
+        data = self.http_client.make_request(url, params, allow_404=True)
         return data.get("data", {}).get("attributes", {}).get("project_transactions_data", []) if data else []
     
     def get_available_units(self, project_id: str) -> List[Dict]:
@@ -93,13 +93,13 @@ class SakaniAPIClient:
             "filter[unit_id]": unit_id,
             "filter[months_back_trend]": months,
         }
-        data = self.http_client.make_request(url, params)
+        data = self.http_client.make_request(url, params, allow_404=True)
         return data.get("data", {}).get("attributes", {}).get("unit_project_trends_data", []) if data else []
     
     def get_unit_transactions(self, unit_id: str) -> List[Dict]:
         url = "https://sakani.sa/analyticCollector/compare_insights/unit_transactions"
         params = {"filter[unit_id]": unit_id}
-        data = self.http_client.make_request(url, params)
+        data = self.http_client.make_request(url, params, allow_404=True)
         return data.get("data", {}).get("attributes", {}).get("unit_transactions_data", []) if data else []
     
     def get_market_unit_ids(self, marketplace_purpose: str = "buy", product_types: Optional[str] = "readymade_units") -> List[str]:

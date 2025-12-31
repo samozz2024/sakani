@@ -60,6 +60,7 @@ class HTTPClient:
                 self.rate_limiter.trigger_global_pause(response.status_code, url)
                 raise Exception(f"Request failed with status {response.status_code}")
             
+            # Only show error for non-404 status codes
             if response.status_code != 200:
                 console.print(f"[bold red]✗ Request failed with status {response.status_code} for {url}[/bold red]")
                 raise Exception(f"Request failed with status {response.status_code}")

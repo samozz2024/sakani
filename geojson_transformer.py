@@ -9,17 +9,8 @@ class GeoJSONTransformer:
     
     @staticmethod
     def transform_overview(overview_data: Dict) -> Dict:
-        return {
-            "type": "FeatureCollection",
-            "features": [
-                {
-                    "type": "Feature",
-                    "id": "overview",
-                    "geometry": None,
-                    "properties": overview_data
-                }
-            ]
-        }
+        """Returns overview as regular JSON (not GeoJSON format)"""
+        return overview_data
     
     @staticmethod
     def transform_mega_projects(mega_projects: List[Dict]) -> Dict:
@@ -134,7 +125,8 @@ class GeoJSONTransformer:
     @staticmethod
     def transform_projects(projects: List[Dict]) -> Dict:
         """Transforms projects into GeoJSON with both project and unit features"""
-        features = []
+        project_features = []
+        unit_features = []
         
         for project in projects:
             project_id = project.get("project_id", "")
@@ -143,7 +135,7 @@ class GeoJSONTransformer:
             
             # Add project as a feature
             project_feature = GeoJSONTransformer._create_project_feature(project)
-            features.append(project_feature)
+            project_features.append(project_feature)
             
             # Add each unit as a separate feature
             for unit in available_units:
@@ -152,11 +144,12 @@ class GeoJSONTransformer:
                     project_id,
                     project_location
                 )
-                features.append(unit_feature)
+                unit_features.append(unit_feature)
         
+        # Combine: all projects first, then all units
         return {
             "type": "FeatureCollection",
-            "features": features
+            "features": project_features + unit_features
         }
     
     @staticmethod
@@ -201,7 +194,7 @@ class GeoJSONTransformer:
         transformed = {}
         
         if data.get("overview"):
-            transformed["overview"] = GeoJSONTransformer.transform_overview(data["overview"])
+            transformed["overview"] = GeoJSONTransformer.transform_overview(data)
             logger.info("Transformed overview to GeoJSON")
         
         if data.get("mega_projects"):

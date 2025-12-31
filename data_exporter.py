@@ -31,13 +31,13 @@ class DataExporter:
             transformed_data = GeoJSONTransformer.transform_all_data(data)
             
             file_mapping = {
-                "overview": "overview.json",
-                "mega_projects": "mega_projects.json",
-                "projects_under_construction": "projects_under_construction.json",
-                "projects_readymade": "projects_readymade.json",
-                "market_unit_buy": "market_unit_buy.json",
-                "market_lands_buy": "market_lands_buy.json",
-                "market_unit_rent": "market_unit_rent.json"
+                "overview": "overview.json",  # Regular JSON format
+                "mega_projects": "mega_projects.geojson",
+                "projects_under_construction": "projects_under_construction.geojson",
+                "projects_readymade": "projects_readymade.geojson",
+                "market_unit_buy": "market_unit_buy.geojson",
+                "market_lands_buy": "market_lands_buy.geojson",
+                "market_unit_rent": "market_unit_rent.geojson"
             }
             
             exported_files = []
@@ -47,7 +47,11 @@ class DataExporter:
                     with open(filepath, "w", encoding="utf-8") as f:
                         json.dump(transformed_data[data_key], f, ensure_ascii=False, indent=2)
                     exported_files.append(filename)
-                    logger.info(f"Exported {filename} with {len(transformed_data[data_key].get('features', []))} features")
+                    # Overview is regular JSON, others are GeoJSON with features
+                    if data_key == "overview":
+                        logger.info(f"Exported {filename} (JSON format)")
+                    else:
+                        logger.info(f"Exported {filename} with {len(transformed_data[data_key].get('features', []))} features")
             
             if exported_files:
                 logger.info(f"Successfully exported {len(exported_files)} GeoJSON files to '{output_dir}' folder: {', '.join(exported_files)}")
