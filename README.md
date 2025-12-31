@@ -27,4 +27,4 @@ python main.py
 ```
 
 ### note: 
-- make sure to edit configuration.py if needed (Be careful with Rate limiting settings)
+- make sure to edit `configuration.py` if needed (Be careful with Rate limiting settings)
