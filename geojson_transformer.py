@@ -194,7 +194,7 @@ class GeoJSONTransformer:
         transformed = {}
         
         if data.get("overview"):
-            transformed["overview"] = GeoJSONTransformer.transform_overview(data)
+            transformed["overview"] = GeoJSONTransformer.transform_overview(data["overview"])
             logger.info("Transformed overview to GeoJSON")
         
         if data.get("mega_projects"):
