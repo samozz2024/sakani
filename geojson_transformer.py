@@ -27,12 +27,12 @@ class GeoJSONTransformer:
                     "type": "Polygon",
                     "coordinates": geo_shape
                 }
-            elif location and location.get("latitude") and location.get("longitude"):
+            elif location and location.get("lat") and location.get("lon"):
                 geometry = {
                     "type": "Point",
                     "coordinates": [
-                        float(location.get("longitude", 0)),
-                        float(location.get("latitude", 0))
+                        float(location.get("lon", 0)),
+                        float(location.get("lat", 0))
                     ]
                 }
             else:
