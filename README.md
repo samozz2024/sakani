@@ -1,15 +1,15 @@
 # Sakani Scraper
 
-# create (.env) file with following info:
-PROXY_ENDPOINT=rp.scrapegw.com:6060
-PROXY_USERNAME=username
-PROXY_PASSWORD=password
-USE_PROXY=True
+## 1. create (.env) file with following info:
+PROXY_ENDPOINT=rp.scrapegw.com:6060\n
+PROXY_USERNAME=username\n
+PROXY_PASSWORD=password\n
+USE_PROXY=True\n
 
-# edit configuration.py if needed
+## 2. edit configuration.py if needed (Be careful with Rate limiting settings)
 
-# create vertual enviroment
-# active venv
-# pip install -r requirements.txt
-# python main.py
+## 3. create vertual enviroment
+## 3.1 active venv
+## 3.2 pip install -r requirements.txt
+## 3.3 python main.py
 
